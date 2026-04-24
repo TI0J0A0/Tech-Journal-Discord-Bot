@@ -1,0 +1,317 @@
+📁 ESTRUTURA COMPLETA DO PROJETO - Tech News Discord Bot
+═══════════════════════════════════════════════════════════════════════════════
+
+tech-news-discord-bot/
+│
+├── 📄 pom.xml                          ✅ CONFIGURAÇÃO MAVEN
+│   └─ Versão Java 21, Spring Boot 3.2.3, JDA, ROME, H2
+│
+├── 📄 README.md                        ✅ DOCUMENTAÇÃO PRINCIPAL
+│   └─ Guia completo de instalação, setup, uso e troubleshooting
+│
+├── 📄 QUICKSTART.md                    ✅ INÍCIO RÁPIDO
+│   └─ 10 passos para colocar rodando em 10 minutos
+│
+├── 📄 CUSTOMIZATION.md                 ✅ PERSONALIZAÇÃO AVANÇADA
+│   └─ Exemplos de customização, filtros, agendamento, etc
+│
+├── 📄 ARCHITECTURE.md                  ✅ ARQUITETURA TÉCNICA
+│   └─ Diagramas, padrões, design e estrutura interna
+│
+├── 📄 .gitignore                       ✅ GIT CONFIGURATION
+│   └─ Ignora tokens, logs, build, etc
+│
+├── 📄 .env.example                     ✅ EXEMPLO DE VARIÁVEIS
+│   └─ Template para DISCORD_BOT_TOKEN e DISCORD_CHANNEL_ID
+│
+├── 📁 src/main/java/com/techjournal/
+│   │
+│   ├── 📄 TechNewsDiscordBotApplication.java ✅ ENTRADA PRINCIPAL
+│   │   └─ Spring Boot @SpringBootApplication com @EnableScheduling
+│   │
+│   ├── 📁 config/
+│   │   └── 📄 DiscordBotConfig.java ✅ CONFIGURAÇÃO JDA
+│   │       ├─ Inicializa JDA com token
+│   │       ├─ Valida configurações
+│   │       └─ Aguarda conexão pronta
+│   │
+│   ├── 📁 properties/
+│   │   ├── 📄 DiscordProperties.java ✅ PROPS DISCORD
+│   │   │   ├─ token (variável de ambiente)
+│   │   │   └─ channelId (variável de ambiente)
+│   │   └── 📄 FeedProperties.java ✅ PROPS RSS
+│   │       └─ urls[] (lista de feeds)
+│   │
+│   ├── 📁 entity/
+│   │   └── 📄 SentNews.java ✅ MODELO JPA
+│   │       ├─ id (Primary Key)
+│   │       ├─ link (Unique Index)
+│   │       ├─ title, source
+│   │       └─ sentAt, createdAt (Timestamps)
+│   │
+│   ├── 📁 repository/
+│   │   └── 📄 SentNewsRepository.java ✅ DATA ACCESS OBJECT
+│   │       ├─ JpaRepository<SentNews, Long>
+│   │       ├─ findByLink()
+│   │       └─ existsByLink()
+│   │
+│   ├── 📁 dto/
+│   │   └── 📄 FeedItem.java ✅ DATA TRANSFER OBJECT
+│   │       ├─ title, description, link
+│   │       ├─ imageUrl, publicationDate
+│   │       ├─ source, author
+│   │       └─ getSafeDescription() (sanitização)
+│   │
+│   ├── 📁 service/
+│   │   ├── 📄 RssFeedService.java ✅ RSS PARSING
+│   │   │   ├─ fetchFeeds() [busca múltiplos feeds]
+│   │   │   ├─ fetchSingleFeed() [busca um feed]
+│   │   │   ├─ parseSyndEntry() [converte ROME → FeedItem]
+│   │   │   └─ extractImageUrl() [extrai imagem do RSS]
+│   │   │
+│   │   ├── 📄 DiscordMessageService.java ✅ ENVIO DISCORD
+│   │   │   ├─ sendNewsToDiscord() [envia para canal]
+│   │   │   ├─ buildNewsEmbed() [formata mensagem]
+│   │   │   └─ truncate() [limita caracteres]
+│   │   │
+│   │   └── 📄 NewsService.java ✅ ORQUESTRADOR
+│   │       ├─ fetchAndPublishNews() [fluxo principal]
+│   │       ├─ isNewNews() [verifica duplicatas]
+│   │       └─ publishNews() [publica notícia]
+│   │
+│   └── 📁 scheduler/
+│       └── 📄 FeedScheduledTask.java ✅ AGENDAMENTO
+│           ├─ @Scheduled(fixedDelay) [padrão]
+│           └─ @Scheduled(cron) [alternativo]
+│
+├── 📁 src/main/resources/
+│   │
+│   ├── 📄 application.properties ✅ CONFIGURAÇÃO PADRÃO
+│   │   ├─ Spring Boot settings
+│   │   ├─ Database (H2) config
+│   │   ├─ Logging levels
+│   │   ├─ Discord Bot config (variáveis de ambiente)
+│   │   ├─ RSS Feeds URLs
+│   │   └─ Scheduler timing
+│   │
+│   └── 📄 application-local.properties ⚙️ CONFIG LOCAL (GIT IGNORED)
+│       ├─ Override para desenvolvimento
+│       └─ Nunca commitar com tokens!
+│
+└── 📁 data/ (criado em runtime)
+    └── 📄 techjournal.h2.db
+        └─ Banco de dados H2 persistente
+
+═══════════════════════════════════════════════════════════════════════════════
+
+RESUMO DAS CLASSES:
+═══════════════════════════════════════════════════════════════════════════════
+
+📊 CAMADA DE CONFIGURAÇÃO
+  ├─ TechNewsDiscordBotApplication        [Bootstrapping]
+  ├─ DiscordBotConfig                     [JDA Bean]
+  ├─ DiscordProperties                    [Config Binding]
+  └─ FeedProperties                       [Config Binding]
+
+📊 CAMADA DE DADOS
+  ├─ SentNews (Entity)                    [Modelo JPA]
+  ├─ SentNewsRepository                   [Data Access]
+  └─ H2 Database                          [Persistência]
+
+📊 CAMADA DTO
+  └─ FeedItem                             [Data Transfer]
+
+📊 CAMADA DE SERVIÇOS
+  ├─ RssFeedService                       [RSS Parsing]
+  ├─ DiscordMessageService                [Discord Integration]
+  └─ NewsService                          [Business Logic]
+
+📊 CAMADA DE AGENDAMENTO
+  └─ FeedScheduledTask                    [Scheduling]
+
+═══════════════════════════════════════════════════════════════════════════════
+
+FLUXO DE EXECUÇÃO:
+═══════════════════════════════════════════════════════════════════════════════
+
+1. INICIALIZAÇÃO (Startup)
+   └─ TechNewsDiscordBotApplication.main()
+      └─ SpringApplication.run()
+         └─ @SpringBootApplication
+            └─ @EnableScheduling
+               └─ DiscordBotConfig.jda()
+                  └─ JDABuilder.createDefault().awaitReady()
+                     └─ "Discord Bot connected!"
+
+2. AGENDAMENTO (Background)
+   └─ FeedScheduledTask
+      └─ @Scheduled (fixedDelay = 3600000ms)
+         └─ Executar a cada 1 hora (configurável)
+
+3. CICLO DE EXECUÇÃO (A cada N horas)
+   └─ FeedScheduledTask.fetchAndPublishNews()
+      └─ NewsService.fetchAndPublishNews()
+         ├─ RssFeedService.fetchFeeds()
+         │  ├─ Para cada URL em FeedProperties.urls
+         │  │  └─ Parse XML/Atom com ROME
+         │  └─ Retorna List<FeedItem>
+         │
+         ├─ Para cada FeedItem:
+         │  ├─ SentNewsRepository.existsByLink()
+         │  │  └─ Checar se já foi enviado
+         │  │
+         │  ├─ Se não enviado:
+         │  │  ├─ DiscordMessageService.sendNewsToDiscord()
+         │  │  │  ├─ EmbedBuilder.build()
+         │  │  │  └─ TextChannel.sendMessageEmbeds().queue()
+         │  │  │
+         │  │  └─ SentNewsRepository.save()
+         │  │     └─ Persiste em H2
+         │  │
+         │  └─ Se já enviado:
+         │     └─ Log.debug("Skipping duplicate")
+
+4. CICLO CONTÍNUO
+   └─ Próxima execução agendada...
+
+═══════════════════════════════════════════════════════════════════════════════
+
+DEPENDÊNCIAS PRINCIPAIS:
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ MAVEN (Build & Dependency Management)
+   └─ mvn clean install
+   └─ mvn spring-boot:run
+
+✅ SPRING BOOT 3.2.3
+   ├─ spring-boot-starter-web (HTTP Server)
+   ├─ spring-boot-starter-data-jpa (ORM/Persistência)
+   └─ spring-boot-starter-logging (SLF4J)
+
+✅ JAVA DISCORD API (JDA 5.0.0)
+   ├─ Conexão com Discord
+   ├─ Envio de mensagens
+   ├─ Embed formatting
+   └─ Event handling
+
+✅ ROME 2.1.0
+   ├─ RSS 0.91, 0.92, 0.93, 0.94, 2.0
+   ├─ Atom 0.3, 1.0
+   └─ RDF parsing
+
+✅ H2 DATABASE
+   ├─ In-memory ou file-based
+   ├─ Sem instalação externa
+   └─ ~10MB por 10k notícias
+
+✅ LOMBOK
+   └─ Reduz boilerplate (@Data, @Builder, etc)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+ARQUIVOS DE CONFIGURAÇÃO A EDITAR:
+═══════════════════════════════════════════════════════════════════════════════
+
+1️⃣ src/main/resources/application.properties
+
+   OBRIGATÓRIO:
+   ├─ app.discord.token=${DISCORD_BOT_TOKEN}
+   └─ app.discord.channel-id=${DISCORD_CHANNEL_ID}
+
+   OPCIONAL:
+   ├─ app.feeds.urls[0]=... (adicionar/remover feeds)
+   └─ app.scheduler.fixed-delay=... (alterar intervalo)
+
+2️⃣ Variáveis de Ambiente (RECOMENDADO)
+
+   Windows PowerShell:
+   ├─ [Environment]::SetEnvironmentVariable("DISCORD_BOT_TOKEN", "xxx", "User")
+   └─ [Environment]::SetEnvironmentVariable("DISCORD_CHANNEL_ID", "yyy", "User")
+
+   Linux/Mac Bash:
+   ├─ export DISCORD_BOT_TOKEN=xxx
+   └─ export DISCORD_CHANNEL_ID=yyy
+
+3️⃣ Arquivo .env Local (ALTERNATIVA)
+
+   Crie: src/main/resources/application-local.properties
+   └─ app.discord.token=seu_token
+   └─ app.discord.channel-id=seu_id
+
+   Execute com: mvn spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=local"
+
+═══════════════════════════════════════════════════════════════════════════════
+
+VARIÁVEIS DE AMBIENTE NECESSÁRIAS:
+═══════════════════════════════════════════════════════════════════════════════
+
+DISCORD_BOT_TOKEN
+  ├─ Obtém em: https://discord.com/developers/applications
+  ├─ Formato: MTA4MzcyNzQyMzc5NzYwNjA2NA.Gf_hg5.xxxxxxxxxxxxxxxxxxxx
+  ├─ Nunca compartilhe!
+  └─ Inicie com: [Environment]::SetEnvironmentVariable() ou export
+
+DISCORD_CHANNEL_ID
+  ├─ Obtém em: Developer Mode ON no Discord
+  ├─ Botão direito no canal → Copy Channel ID
+  ├─ Formato: 1234567890123456789 (número grande)
+  └─ Configure em application.properties ou variável de ambiente
+
+═══════════════════════════════════════════════════════════════════════════════
+
+COMO RODAR:
+═══════════════════════════════════════════════════════════════════════════════
+
+OPÇÃO 1: Com Variáveis de Ambiente
+  $ mvn clean install
+  $ mvn spring-boot:run
+
+OPÇÃO 2: Com Arquivo Local
+  $ mvn clean install
+  $ mvn spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=local"
+
+OPÇÃO 3: JAR executável
+  $ mvn clean install
+  $ java -jar target/tech-news-discord-bot-1.0.0.jar
+
+═══════════════════════════════════════════════════════════════════════════════
+
+PRÓXIMOS PASSOS:
+═══════════════════════════════════════════════════════════════════════════════
+
+1️⃣ OBTER CREDENCIAIS
+   └─ Acesse: https://discord.com/developers/applications
+      ├─ Crie Application
+      ├─ Adicione Bot
+      ├─ Copie TOKEN
+      └─ Adicione ao seu servidor
+
+2️⃣ CONFIGURAR PROJETO
+   └─ Edite application.properties
+      ├─ app.discord.token=...
+      └─ app.discord.channel-id=...
+
+3️⃣ BUILD & RUN
+   └─ mvn clean install
+   └─ mvn spring-boot:run
+
+4️⃣ VERIFICAR
+   └─ Procure no console por: "Discord Bot successfully connected"
+   └─ Verifique mensagens no canal Discord
+
+═══════════════════════════════════════════════════════════════════════════════
+
+DOCUMENTAÇÃO DISPONÍVEL:
+═══════════════════════════════════════════════════════════════════════════════
+
+📖 README.md                 - Documentação completa (30+ seções)
+📖 QUICKSTART.md             - Início rápido (10 passos)
+📖 CUSTOMIZATION.md          - Personalização & Exemplos
+📖 ARCHITECTURE.md           - Design técnico & Padrões
+📖 PROJECT_STRUCTURE.txt     - Este arquivo
+
+═══════════════════════════════════════════════════════════════════════════════
+
+Criado com ❤️ para entusiastas de tecnologia e cibersegurança
+Última atualização: Abril 2024
+Versão: 1.0.0

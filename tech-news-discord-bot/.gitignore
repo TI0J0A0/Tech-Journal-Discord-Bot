@@ -1,0 +1,42 @@
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+*.code-workspace
+
+# Build
+target/
+.classpath
+.project
+.settings/
+bin/
+
+# Runtime
+*.class
+*.jar
+*.log
+.DS_Store
+
+# Database
+./data/
+*.h2.db
+*.trace.db
+
+# Environment
+.env
+.env.local
+application-local.properties
+
+# Maven
+.m2/
+
+# Gradle
+.gradle/
+build/
+
+# Node (se houver)
+node_modules/
+npm-debug.log
+yarn-error.log

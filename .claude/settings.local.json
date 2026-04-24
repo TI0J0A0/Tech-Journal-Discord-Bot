@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p ~/desktop/tech-news-discord-bot)",
+      "Read(//c/Users/joaog/desktop/**)"
+    ]
+  }
+}
