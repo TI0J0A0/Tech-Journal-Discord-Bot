@@ -31,6 +31,17 @@ public class FeedItem {
             .replaceAll("&lt;", "<")
             .replaceAll("&gt;", ">")
             .replaceAll("&quot;", "\"")
+            .replaceAll("&apos;", "'")
+            .replaceAll("&#39;", "'")
+            .replaceAll("&nbsp;", " ")
+            .replaceAll("&hellip;", "...")
+            .replaceAll("&mdash;", "-")
+            .replaceAll("&ndash;", "-")
+            .replaceAll("&ldquo;", "\"")
+            .replaceAll("&rdquo;", "\"")
+            .replaceAll("&#8220;", "\"")
+            .replaceAll("&#8221;", "\"")
+            .replaceAll("\\s+", " ")
             .trim();
 
         if (cleaned.length() > maxLength) {

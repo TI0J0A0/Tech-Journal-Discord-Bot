@@ -76,8 +76,9 @@ public class NewsCategorizer {
     }
 
     private boolean containsAny(String text, String... keywords) {
+        if (text == null || text.isEmpty()) return false;
         for (String keyword : keywords) {
-            if (text.contains(keyword)) return true;
+            if (keyword != null && text.contains(keyword)) return true;
         }
         return false;
     }

@@ -57,12 +57,14 @@ public class RssFeedService {
         connection.setReadTimeout(READ_TIMEOUT_MS);
         connection.setInstanceFollowRedirects(true);
 
-        try (XmlReader xmlReader = new XmlReader(connection)) {
-            SyndFeed feed = syndFeedInput.build(xmlReader);
+        try {
+            try (XmlReader xmlReader = new XmlReader(connection)) {
+                SyndFeed feed = syndFeedInput.build(xmlReader);
 
-            for (SyndEntry entry : feed.getEntries()) {
-                FeedItem item = parseSyndEntry(entry, feed.getTitle());
-                items.add(item);
+                for (SyndEntry entry : feed.getEntries()) {
+                    FeedItem item = parseSyndEntry(entry, feed.getTitle());
+                    items.add(item);
+                }
             }
         } finally {
             connection.disconnect();
