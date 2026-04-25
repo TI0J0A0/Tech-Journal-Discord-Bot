@@ -43,6 +43,11 @@ public class DiscordMessageService {
 
     public void sendNewsToDiscord(FeedItem feedItem, Runnable onSuccess) {
         try {
+            if (feedItem == null || feedItem.getLink() == null) {
+                log.warn("Tentativa de enviar notícia inválida ao Discord");
+                return;
+            }
+
             ForumChannel forum = jda.getForumChannelById(discordProperties.getChannelId());
 
             if (forum == null) {
@@ -68,8 +73,10 @@ public class DiscordMessageService {
                             log.error("Erro ao executar callback pós-envio: {}", e.getMessage(), e);
                         }
                     },
-                    error -> log.error("Falha ao criar post no fórum para '{}': {}",
-                        feedItem.getTitle(), error.getMessage())
+                    error -> {
+                        log.error("Falha ao criar post no fórum para '{}': {} - {}",
+                            feedItem.getTitle(), error.getClass().getSimpleName(), error.getMessage());
+                    }
                 );
         } catch (Exception e) {
             log.error("Erro ao enviar notícia para o Discord: {}", e.getMessage(), e);

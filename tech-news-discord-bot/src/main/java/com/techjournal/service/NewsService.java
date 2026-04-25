@@ -29,10 +29,15 @@ public class NewsService {
 
         try {
             List<FeedItem> feedItems = rssFeedService.fetchFeeds();
+            if (feedItems == null) feedItems = List.of();
             log.info("Total items fetched from RSS feeds: {}", feedItems.size());
 
             int publishedCount = 0;
             for (FeedItem feedItem : feedItems) {
+                if (feedItem == null || feedItem.getLink() == null) {
+                    log.debug("Skipping invalid feed item");
+                    continue;
+                }
                 if (isNewNews(feedItem)) {
                     publishNews(feedItem);
                     publishedCount++;
