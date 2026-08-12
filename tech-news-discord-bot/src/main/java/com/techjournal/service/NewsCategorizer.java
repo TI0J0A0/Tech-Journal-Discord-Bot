@@ -13,7 +13,7 @@ public class NewsCategorizer {
         AI("🤖", "IA", new Color(155, 89, 182)),
         TECH("💻", "Tech", new Color(52, 152, 219)),
         BUSINESS("💼", "Negócios", new Color(46, 204, 113)),
-        GENERAL("📰", "Geral", new Color(149, 165, 166));
+        GENERAL("📰", "Geral", new Color(47, 49, 54));
 
         private final String emoji;
         private final String displayName;
